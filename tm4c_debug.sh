@@ -2,27 +2,17 @@
 #
 # Auto Build and Debug for ek-tm4c123gxl
 # Auther: Summerslyb<Summerslyb@gmail.com>
-# Version: 2015-01-09 V0.22 
+# Version: 2015-01-10 V0.30
 #
 ###################################
 
 #!/bin/bash
 
-check(){
+is_success(){
 		if [ "$?" != "0" ]; then
 				echo -e "\033[31mError!\033[0m"
 				exit -1;
 		fi
-}
-getprjname(){
-	PRJNAME=$(grep -a "the Project Name" Makefile | sed 's#\#\(.*\) = the Project Name$#\1#g')
-}
-diff(){
-	DIFF=$(awk '{print $0}' Makefile Makefile.tmp | sort | uniq -u)
-	rm -rf Makefile.tmp
-}
-getopenocdpid(){
-	OPENOCD_PID=$(ps -ef | grep -a openocd | awk '{print $2}')
 }
 killopenocd(){
 	OPENOCD_PID=$(ps -ef | grep -a openocd | awk '{print $2}')
@@ -36,33 +26,40 @@ addDEBUGCFLSGS(){
 	rm -rf Makefile_*
 }
 
-#Prepare
+# 初始化
 killopenocd
-mv Makefile Makefile.tmp
-rm openocd_output
-#Generate Makefile
-./tm4c_genMakefile.sh
-check
-addDEBUGCFLSGS
-diff
-#如果有不同
-if [ -n "$DIFF" ]; then
-	make clean
-	check
+declare MAKEFILE_ORIGINAL
+if [ -f Makefile ]; then
+	MAKEFILE_ORIGINAL=$(cat Makefile)
 fi
+# 生成Makefile
+tm4c_genMakefile.sh
+is_success
+addDEBUGCFLSGS
+MAKEFILE=$(cat Makefile)
+if [ "$MAKEFILE" != "$MAKEFILE_ORIGINAL" ]; then
+	make clean
+	is_success
+fi
+# 编译
 make
-check
+is_success
+# 启动OpenOCD
 echo -e "\033[33mLoading OPENOCD...\033[0m"
 openocd --file ~/ToolChain/openocd/ek-tm4c123gxl.cfg >> openocd_output 2>&1 &
 sleep 1s
 ISERROR_OPENOCD=$(grep -a "Error" openocd_output)
 if [ -n "$ISERROR_OPENOCD" ]; then
-	echo -e "\033[31mYou haven't insert the devices!\033[0m"
+	echo -e "\033[31m===========Error Message===========\033[0m"
+	cat openocd_output
 	exit -1;
 fi
-getprjname
+# 启动GDB
+PRJNAME=$(grep -a "the Project Name" Makefile | sed 's#\#\(.*\) = the Project Name$#\1#g')
 rm -rf gdbprecmd
-sed "s/_PRJ_NAME_/${PRJNAME}/g" tm4c_gdbprecmdTemplate >> gdbprecmd
+sed "s/_PRJ_NAME_/${PRJNAME}/g" /usr/share/Build_Tool/tm4c_gdbprecmdTemplate >> gdbprecmd
 echo -e "\033[33mLoading GDB...\033[0m"
 arm-none-eabi-gdb -x gdbprecmd -quiet gcc/${PRJNAME}.axf
+# 结束调试时关掉OpenOCD
 killopenocd
+rm -rf gdbprecmd openocd_output

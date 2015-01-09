@@ -2,24 +2,17 @@
 #
 # Auto Build and Flash for ek-tm4c123gxl
 # Auther: Summerslyb<Summerslyb@gmail.com>
-# Version: 2015-01-09 V0.22 
+# Version: 2015-01-10 V0.30
 #
 ###################################
 
 #!/bin/bash
 
-check(){
+is_success(){
 		if [ "$?" != "0" ]; then
 				echo -e "\033[31mError!\033[0m"
 				exit -1;
 		fi
-}
-getprjname(){
-	PRJNAME=$(grep -a "the Project Name" Makefile | sed 's#\#\(.*\) = the Project Name$#\1#g')
-}
-diff(){
-	DIFF=$(awk '{print $0}' Makefile Makefile.tmp | sort | uniq -u)
-	rm -rf Makefile.tmp
 }
 killopenocd(){
 	OPENOCD_PID=$(ps -ef | grep -a openocd | awk '{print $2}')
@@ -27,22 +20,26 @@ killopenocd(){
 		kill -9 "$OPENOCD_PID"
 	fi
 }
-
+# 初始化
 killopenocd
-mv Makefile Makefile.tmp
-./tm4c_genMakefile.sh
-check
-diff
-#如果有不同
-if [ -n "$DIFF" ]; then
-	make clean
-	check
+declare MAKEFILE_ORIGINAL
+if [ -f Makefile ]; then
+	MAKEFILE_ORIGINAL=$(cat Makefile)
 fi
+# 生成Makefile
+tm4c_genMakefile.sh
+is_success
+MAKEFILE=$(cat Makefile)
+if [ "$MAKEFILE" != "$MAKEFILE_ORIGINAL" ]; then
+	make clean
+	is_success
+fi
+# 编译
 make
-check
-USBDEVICES=$(LMFlash --usbdevices)
-if [ -n "$USBDEVICES" ]; then
-	getprjname
+is_success
+# 烧写
+if [ -n "$(LMFlash --usbdevices)" ]; then
+	PRJNAME=$(grep -a "the Project Name" Makefile | sed 's#\#\(.*\) = the Project Name$#\1#g')
 	LMFlash --quick-set=ek-tm4c123gxl --verify --reset gcc/${PRJNAME}.bin
 	echo -e "\033[31m\033[0m"
 	echo -e "\033[32mFinished!\033[0m"

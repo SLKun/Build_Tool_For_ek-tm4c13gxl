@@ -2,7 +2,7 @@
 #
 # Makefile - Rules for Common Project.
 # Based on Examples By TI
-# Version: 2015-01-09 V0.22 
+# Version: 2015-01-09 V0.22
 #
 #******************************************************************************
 #_S_ROOT_DIR_ = the ROOT Diretory for TivaWare
