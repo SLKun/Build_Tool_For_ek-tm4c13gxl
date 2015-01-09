@@ -2,7 +2,7 @@
 #
 # Auto Build and Debug for ek-tm4c123gxl
 # Auther: Summerslyb<Summerslyb@gmail.com>
-# Version: 2015-01-09 V0.22
+# Version: 2015-01-09 V0.22 
 #
 ###################################
 
