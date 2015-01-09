@@ -1,0 +1,69 @@
+#******************************************************************************
+#
+# Makefile - Rules for Common Project.
+# Based on Examples By TI
+# Version: 2015-01-09 V0.22
+#
+#******************************************************************************
+#_S_ROOT_DIR_ = the ROOT Diretory for TivaWare
+#_PRJ_NAME_ = the Project Name
+
+#
+# Defines the part type that this project uses.
+#
+PART=TM4C123GH6PM
+
+#
+# The base directory for TivaWare.
+#
+ROOT=_S_ROOT_DIR_
+
+#
+# Include the common make definitions.
+#
+include ${ROOT}/makedefs
+
+#
+# Where to find source files that do not live in this directory.
+#
+VPATH=${ROOT}/utils
+
+#
+# Where to find header files that do not live in the source directory.
+#
+IPATH=${ROOT}
+IPATH+=.
+
+#
+# The default rule, which causes the _PRJ_NAME_ example to be built.
+#
+all: ${COMPILER}
+all: ${COMPILER}/_PRJ_NAME_.axf
+
+#
+# The rule to clean out all the build products.
+#
+clean:
+	@rm -rf ${COMPILER} ${wildcard *~}
+
+#
+# The rule to create the target directory.
+#
+${COMPILER}:
+	@mkdir -p ${COMPILER}
+
+#
+# Rules for building the _PRJ_NAME_ example.
+#
+#_LOC_INS_
+${COMPILER}/_PRJ_NAME_.axf: _PRJ_NAME_.ld
+SCATTERgcc__PRJ_NAME_=_PRJ_NAME_.ld
+ENTRY__PRJ_NAME_=ResetISR
+CFLAGSgcc=-DTARGET_IS_BLIZZARD_RB1 -g
+
+#
+# Include the automatically generated dependency files.
+#
+ifneq (${MAKECMDGOALS},clean)
+-include ${wildcard ${COMPILER}/*.d} __dummy__
+endif
