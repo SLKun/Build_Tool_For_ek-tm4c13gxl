@@ -55,7 +55,7 @@ check
 echo -e "\033[33mLoading OPENOCD...\033[0m"
 openocd --file ~/ToolChain/openocd/ek-tm4c123gxl.cfg >> openocd_output 2>&1 &
 sleep 1s
-ISERROR_OPENOCD=$(grep -a "Error" output_tmp)
+ISERROR_OPENOCD=$(grep -a "Error" openocd_output)
 if [ -n "$ISERROR_OPENOCD" ]; then
 	echo -e "\033[31mYou haven't insert the devices!\033[0m"
 	exit -1;
