@@ -1,13 +1,0 @@
---2015-01-10 14:01:05--  https://github.com/Summerslyb/Build_Tool_For_ek-tm4c13gxl/archive/stable.zip
-正在解析主机 github.com (github.com)... 192.30.252.131
-正在连接 github.com (github.com)|192.30.252.131|:443... 已连接。
-已发出 HTTP 请求，正在等待回应... 302 Found
-位置：https://codeload.github.com/Summerslyb/Build_Tool_For_ek-tm4c13gxl/zip/stable [跟随至新的 URL]
---2015-01-10 14:01:14--  https://codeload.github.com/Summerslyb/Build_Tool_For_ek-tm4c13gxl/zip/stable
-正在解析主机 codeload.github.com (codeload.github.com)... 192.30.252.145
-正在连接 codeload.github.com (codeload.github.com)|192.30.252.145|:443... 已连接。
-已发出 HTTP 请求，正在等待回应... 200 OK
-长度：550819 (538K) [application/zip]
-正在保存至: “/tmp/Build_Tool/Build_Tool.zip”
-
-p/Build_Tool/Build_Tool.  15%[====>                                ]  82.22K  18.9 B/s   eta 6h 50m
