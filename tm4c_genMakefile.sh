@@ -2,7 +2,7 @@
 #
 # Auto Generate Makefile Script for ek-tm4c123gxl
 # Auther: Summerslyb<Summerslyb@gmail.com>
-# Version: 2015-01-10 V0.30
+# Version: 2015-01-10 V0.40
 #
 ###################################
 #! /bin/bash
