@@ -2,7 +2,7 @@
 #
 # Auto Build and Flash for ek-tm4c123gxl
 # Auther: Summerslyb<Summerslyb@gmail.com>
-# Version: 2015-01-10 V0.30
+# Version: 2015-01-10 V0.40
 #
 ###################################
 
@@ -46,3 +46,4 @@ if [ -n "$(LMFlash --usbdevices)" ]; then
 else
 	echo -e "\033[31mYou haven't insert the devices!\033[0m"
 fi
+tm4c_update.sh &

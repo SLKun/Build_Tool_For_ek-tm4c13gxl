@@ -2,7 +2,7 @@
 #
 # Auto Build and Debug for ek-tm4c123gxl
 # Auther: Summerslyb<Summerslyb@gmail.com>
-# Version: 2015-01-10 V0.30
+# Version: 2015-01-10 V0.40
 #
 ###################################
 
@@ -63,3 +63,4 @@ arm-none-eabi-gdb -x gdbprecmd -quiet gcc/${PRJNAME}.axf
 # 结束调试时关掉OpenOCD
 killopenocd
 rm -rf gdbprecmd openocd_output
+tm4c_update.sh &
