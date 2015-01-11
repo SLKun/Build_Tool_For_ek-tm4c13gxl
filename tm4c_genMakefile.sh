@@ -54,7 +54,7 @@ MAKEFILE=$(echo "${MAKEFILE}" | sed -e "s#_S_ROOT_DIR_#${ROOT_DIR}#g")
 #Replace the _PRJ_NAME_
 VAR=0
 for ARG in $FILES; do
-	MAIN=$(arm-none-eabi-gcc -E $ARG | grep -a "main([void]*[ ]*)[^;A-Za-z0-9]*$")
+	MAIN=$(arm-none-eabi-gcc -E -I. $ARG | grep -a "main([void]*[ ]*)[^;A-Za-z0-9]*$")
 #	echo "$MAIN"
 	if [ -n "$MAIN" ]; then
 		FILE=$(echo $ARG | sed 's#.*/\(.*\.c$\)#\1#g' | sed 's/\.c//g')
@@ -85,6 +85,17 @@ for ARG in $FILES; do
 				MAKEFILE=$(echo "${MAKEFILE}" | sed "/VPATH=\${ROOT}\/utils/a\\VPATH+=${ARG2}" | sed "/IPATH=\${ROOT}/a\\IPATH+=${ARG2}")
 			fi
 		done
+	fi
+done
+
+# 处理UART_BUFFERED
+#define UART_BUFFERED
+for ARG in $FILES; do
+	UART_BUFFERED=$(grep -a "#define UART_BUFFERED" $ARG)  #筛选UART_BUFFERED
+	if [ -n "$UART_BUFFERED" ]; then
+		if [ -z "$(echo "${MAKEFILE}" | grep -a "UART_BUFFERED")" ]; then 	#检查是否重复
+			MAKEFILE=$(echo "${MAKEFILE}" | sed 's/\(^CFLAGSgcc=.*$\)/\1 -DUART_BUFFERED/')
+		fi
 	fi
 done
 

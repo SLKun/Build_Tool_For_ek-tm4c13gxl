@@ -42,4 +42,4 @@ else
 fi
 echo "${BUFFER}" > ${CONFIG}
 echo -e "\033[33m============================================\033[0m"
-rm -rf ${WORKDIR} install.sh
+rm -rf ${WORKDIR}
