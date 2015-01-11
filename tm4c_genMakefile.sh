@@ -91,8 +91,13 @@ done
 # 处理UART_BUFFERED
 #define UART_BUFFERED
 for ARG in $FILES; do
-	UART_BUFFERED=$(grep -a "#define UART_BUFFERED" $ARG)  #筛选UART_BUFFERED
+	UART_BUFFERED=$(grep -a "^#define UART_BUFFERED" ${ARG})  #筛选UART_BUFFERED
 	if [ -n "$UART_BUFFERED" ]; then
+		if [ -z "$(grep -a "^#ifndef UART_BUFFERED" ${ARG})" ]; then
+			sed 's/^#define UART_BUFFERED/#ifndef UART_BUFFERED\n#define UART_BUFFERED\n#endif/g' $ARG > ${ARG}_0
+				\cp ${ARG}_0 $ARG
+				rm -rf ${ARG}_*
+		fi
 		if [ -z "$(echo "${MAKEFILE}" | grep -a "UART_BUFFERED")" ]; then 	#检查是否重复
 			MAKEFILE=$(echo "${MAKEFILE}" | sed 's/\(^CFLAGSgcc=.*$\)/\1 -DUART_BUFFERED/')
 		fi
