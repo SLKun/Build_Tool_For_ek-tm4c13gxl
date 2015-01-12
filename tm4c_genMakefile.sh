@@ -2,7 +2,7 @@
 #
 # Auto Generate Makefile Script for ek-tm4c123gxl
 # Auther: Summerslyb<Summerslyb@gmail.com>
-# Version: 2015-01-10 V0.40
+# Version: 2015-01-12 V0.42
 #
 ###################################
 #! /bin/bash
@@ -91,9 +91,9 @@ done
 # 处理UART_BUFFERED
 #define UART_BUFFERED
 for ARG in $FILES; do
-	UART_BUFFERED=$(grep -a "^#define UART_BUFFERED" ${ARG})  #筛选UART_BUFFERED
+	UART_BUFFERED=$(grep -a '^[ '$'\t]*#define UART_BUFFERED' ${ARG})  #筛选UART_BUFFERED
 	if [ -n "$UART_BUFFERED" ]; then
-		if [ -z "$(grep -a "^#ifndef UART_BUFFERED" ${ARG})" ]; then
+		if [ -z "$(grep -a '^[ '$'\t]*#ifndef UART_BUFFERED' ${ARG})" ]; then
 			sed 's/^#define UART_BUFFERED/#ifndef UART_BUFFERED\n#define UART_BUFFERED\n#endif/g' $ARG > ${ARG}_0
 				\cp ${ARG}_0 $ARG
 				rm -rf ${ARG}_*

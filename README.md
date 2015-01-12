@@ -18,7 +18,14 @@
 5.	如果存在libdriver.a找不到的情况,请尝试执行cd ~/ToolChain/TivaWare && make clean && make以重新编译TivaWare.
 
 ## Changelog
-### [2015-01-09	V0.40]
+### [2015-01-12	V0.42]
+1.	修正UART_BUFFERED可能识别错误的问题
+
+### [2015-01-12	V0.41]
+1.	修正了Update时的错误信息提示
+2.	添加了对于UART_BUFFERED的处理
+
+### [2015-01-10	V0.40]
 1.	添加了自动更新的实现
 2.	添加在线安装脚本
 
