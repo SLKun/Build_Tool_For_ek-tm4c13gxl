@@ -2,7 +2,7 @@
 #
 # Update for Build_Tool
 # Auther: Summerslyb<Summerslyb@gmail.com>
-# Version: 2015-01-10 V0.40
+# Version: 2015-01-12 V0.41
 #
 ###################################
 
@@ -18,12 +18,16 @@ UPDATE_DATE_LAST=$(grep "UPDATE_DATE" ${CONFIG} | sed 's/UPDATE_DATE *= *\([0-9]
 is_success(){
 		if [ "$?" != "0" ]; then
 				echo -e "\033[31mError!\033[0m"
+				rm -rf ${WORKDIR}
 				exit -1;
 		fi
 }
 getVersion(){
 	wget --quiet "https://raw.githubusercontent.com/Summerslyb/Build_Tool_For_ek-tm4c13gxl/stable/version" -O ${WORKDIR}/version
-	is_success
+	if [ "$?" != "0" ]; then
+		rm -rf ${WORKDIR}
+		exit -1;
+	fi
 	NEW_VERSION=$(cat ${WORKDIR}/version)
 	OLD_VERSION=$(cat ${DATADIR}/version)
 }
@@ -39,14 +43,6 @@ update(){
 	mv ${WORKDIR}/Build_Tool_For_ek-tm4c13gxl-stable/tm4c_*.sh ${PROGRAMDIR}
 	mkdir -p /usr/share/Build_Tool
 	mv ${WORKDIR}/Build_Tool_For_ek-tm4c13gxl-stable/* ${DATADIR}
-	# 写入新的UPDATE_DATE
-	if [ -s ${CONFIG} ]; then
-		BUFFER=$(grep "UPDATE_DATE" ${CONFIG} | sed "s/\(UPDATE_DATE *= *\)[0-9]\{4\}[0-9]\{2\}[0-9]\{2\}/\\1${DATE_NOW}/g")
-		rm -rf ${CONFIG}
-	else
-		BUFFER="UPDATE_DATE = ${DATE_NOW}"
-	fi
-	echo "${BUFFER}" > ${CONFIG}
 	echo -e "\033[33m============================================\033[0m"
 }
 
@@ -54,6 +50,15 @@ update(){
 mkdir -p ${WORKDIR}
 if [ ${DATE_NOW} -gt ${UPDATE_DATE_LAST} ]; then	# 比较升级日期与当前日期
 # if [ true ]; then
+	# 写入新的UPDATE_DATE
+	if [ -s ${CONFIG} ]; then
+		BUFFER=$(grep "UPDATE_DATE" ${CONFIG} | sed "s/\(UPDATE_DATE *= *\)[0-9]\{4\}[0-9]\{2\}[0-9]\{2\}/\\1${DATE_NOW}/g")
+		rm -rf ${CONFIG}
+	else
+		BUFFER="UPDATE_DATE = ${DATE_NOW}"
+	fi
+	echo "${BUFFER}" >> ${CONFIG}
+
 	getVersion
 	if [ ${OLD_VERSION} != ${NEW_VERSION} ]; then	# 比较版本是否发生变化
 	# if [ true ]; then
